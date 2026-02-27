@@ -310,12 +310,46 @@ let regionConfig = {
 // Keywords for filtering OCR text
 const KW = {
   en: {
-    main: ["dmg","rate","healing","elemental","mastery","recharge"],
-    sub:  ["dmg","rate","healing","mastery","recharge"],
+    main: [
+      "Elemental Mastery",
+      "Energy Recharge",
+      "Physical DMG Bonus",
+      "Pyro DMG Bonus",
+      "Hydro DMG Bonus",
+      "Electro DMG Bonus",
+      "Cryo DMG Bonus",
+      "Anemo DMG Bonus",
+      "Geo DMG Bonus",
+      "Dendro DMG Bonus",
+      "Crit Rate",
+      "Crit DMG",
+      "Healing Bonus"
+    ],
+    sub: [
+      "Crit Rate",
+      "Crit DMG"
+    ],
   },
   th: {
-    main: ["คริ","ครี","โบนัส","ชำนาญ","การฟื้นฟู","ดาเมจ","อัตรา"],
-    sub:  ["คริ","ครี","โบนัส","ชำนาญ","การฟื้นฟู","ดาเมจ","อัตรา" ,"ความแรง"],
+    main: [
+      "ความชำนาญธาตุ",
+      "ฟื้นฟูพลังงาน",
+      "โบนัสความเสียหายกายภาพ",
+      "โบนัสความเสียหายไฟ",
+      "โบนัสความเสียหายน้ำ",
+      "โบนัสความเสียหายไฟฟ้า",
+      "โบนัสความเสียหายน้ำแข็ง",
+      "โบนัสความเสียหายลม",
+      "โบนัสความเสียหายหิน",
+      "โบนัสความเสียหายไม้",
+      "อัตราคริ",
+      "ความแรงคริ",
+      "โบนัสการรักษา"
+    ],
+    sub: [
+      "อัตราคริ",
+      "ความแรงคริ"
+    ]
   }
 };
 
@@ -528,7 +562,8 @@ async function runScan() {
     try {
       const text = await ocrWithTesseract(ocrCanvas.toDataURL('image/png'));
       results[name] = filterText(text, name);
-      log(`[OCR] ${name}: "${text.trim().substring(0,50).replace(/\n/g,' ')}" → ${JSON.stringify(results[name])}`);
+      const raw = text.trim().substring(0, 60).replace(/\n/g, ' | ');
+      log(`[OCR] ${name}: "${raw}" → ${JSON.stringify(results[name])}`);
     } catch (e) {
       results[name] = [];
       log(`[ERR] OCR ${name}: ${e.message}`);
@@ -629,13 +664,104 @@ function setTessProgress(pct, msg) {
 // ============================================================
 // KEYWORD FILTER
 // ============================================================
+// ============================================================
+// FUZZY MATCH — tolerant ต่อ OCR errors ของ Tesseract Thai
+// ============================================================
+
+/** Bigram similarity (Dice) */
+function bigramSim(a, b) {
+  if (a.length < 2 || b.length < 2) return 0;
+  const bg = s => { const r = []; for (let i=0;i<s.length-1;i++) r.push(s.slice(i,i+2)); return r; };
+  const bA = bg(a), bB = [...bg(b)];
+  let hits = 0;
+  for (const x of bA) { const i = bB.indexOf(x); if (i!==-1){hits++;bB.splice(i,1);} }
+  return (2*hits)/(bA.length+bg(b).length);
+}
+
+/** Character overlap — เช็คว่ากี่ % ของ keyword chars ปรากฏใน line */
+function charOverlap(line, kw) {
+  const pool = [...line];
+  let hits = 0;
+  for (const c of kw) {
+    const i = pool.indexOf(c);
+    if (i !== -1) { hits++; pool.splice(i,1); }
+  }
+  return hits / kw.length;
+}
+
+function bestKeywordMatch(line, kws) {
+  const clean  = s => s.replace(/[0-9+\-%.\/\s]/g,'');
+  const lineC  = clean(line);
+
+  let best = null, bestScore = 0;
+
+  for (const kw of kws) {
+    const kwC = clean(kw);
+    if (!kwC) continue;
+
+    // 1. Exact substring
+    if (line.toLowerCase().includes(kw.toLowerCase())) return kw;
+
+    // 2. Char overlap + bigram
+    const overlap = charOverlap(lineC, kwC);
+    const bigram  = bigramSim(lineC, kwC);
+    const score   = overlap * 0.7 + bigram * 0.3;
+
+    if (score > bestScore) { bestScore = score; best = kw; }
+  }
+
+  // threshold ต่ำสำหรับ TH เพราะ Tesseract ตัดตัวอักษรเยอะ
+  const threshold = lang === 'th' ? 0.38 : 0.60;
+
+  return bestScore >= threshold ? best : null;
+}
+
+// Pattern ตรวจ sub stat ไทยเพิ่มเติม — จับ "อตรา/อัตรา/อยกเรา + ตัวเลข%"
+const TH_SUB_PATTERNS = [
+  { re: /อ[ัต][ตร][าก][คกดถรฤ]/, kw: 'อัตราคริ' },
+  { re: /[คดถ]วาม[แแรง][รถคดตกง]/, kw: 'ความเสียหายคริ' },
+  { re: /อ[ยย][กก]เรา|อตเรา|อตรา[ดถ]/, kw: 'อัตราคริ' },
+  { re: /[คดถ]วามเสีย/, kw: 'ความเสียหายคริ' },
+];
+
 function filterText(rawText, regionName) {
   const kws = regionName === 'Main' ? KW[lang].main : KW[lang].sub;
   const lines = rawText.split('\n').map(l => l.trim()).filter(l => l.length > 1);
-  return lines
-    .filter(line => kws.some(k => line.toLowerCase().includes(k.toLowerCase())))
-    .map(l => l.replace(/[|\\[\]{}]/g, '').trim())
-    .filter(Boolean);
+  const matched = [];
+
+  for (const line of lines) {
+    let kw = null;
+
+    // Pattern matching สำหรับ sub TH ก่อน (เร็วและแม่น)
+    if (lang === 'th' && regionName !== 'Main') {
+      for (const p of TH_SUB_PATTERNS) {
+        if (p.re.test(line) && kws.includes(p.kw)) {
+          kw = p.kw;
+          break;
+        }
+      }
+    }
+
+    // Fallback: fuzzy
+    if (!kw) kw = bestKeywordMatch(line, kws);
+
+    if (kw) {
+      log(`[MATCH] "${line}" → "${kw}"`);
+      matched.push(kw);
+    } else if (lang === 'th') {
+      // Debug score
+      const clean = s => s.replace(/[0-9+\-%.\/\s]/g,'');
+      const lineC = clean(line);
+      let dbg = '';
+      for (const k of kws) {
+        const kC = clean(k);
+        const sc = (charOverlap(lineC,kC)*0.7 + bigramSim(lineC,kC)*0.3).toFixed(2);
+        dbg += ` [${k.slice(0,4)}:${sc}]`;
+      }
+      log(`[DBG] "${line.slice(0,22)}"${dbg}`);
+    }
+  }
+  return [...new Set(matched)];
 }
 
 // ============================================================
