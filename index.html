@@ -258,7 +258,7 @@
           </div>
           <div class="srow">
             <label>Diff %</label>
-            <input type="range" min="0.005" max="0.1" step="0.005" value="0.025" id="diffSlider"
+            <input type="range" min="0.00" max="0.1" step="0.005" value="0.025" id="diffSlider"
               oninput="diffThreshold=parseFloat(this.value);this.nextElementSibling.textContent=(this.value*100).toFixed(1)+'%'">
             <span class="sval" style="color:var(--text-dim)">2.5%</span>
           </div>
@@ -706,7 +706,7 @@ function buildRegionSliders() {
       const item = document.createElement('div'); item.className = 'slider-item';
       item.innerHTML = `<label>${lbl.toUpperCase()}</label>
         <div class="slider-row">
-          <input type="range" min="0" max="1" step="0.005" value="${vals[i]}"
+          <input type="range" min="0" max="1" step="0.001" value="${vals[i]}"
             oninput="updateRegion('${key}',${i},this.value);this.nextElementSibling.textContent=parseFloat(this.value).toFixed(3)">
           <span class="slider-val">${vals[i].toFixed(3)}</span>
         </div>`;
