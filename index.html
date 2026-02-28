@@ -576,8 +576,9 @@ function bestKeywordMatch(line, kws, regionName) {
   // Negative guard — ถ้า line มีคำเหล่านี้ ห้าม match keyword บางตัว
   const NEGATIVE_GUARDS = [
     { linePattern: /ชํา|ชำ|นาญ|ชาน/,  blockKw: 'ความแรงคริ' },
-    { linePattern: /พันฟ|ฟันฟ|ฟื้น|พลังงาน/, blockKw: 'อัตราคริ'  },
+    { linePattern: /ชํา|ชำ|นาญ|ชาน/,  blockKw: 'อัตราคริ' },
     { linePattern: /พันฟ|ฟันฟ|ฟื้น|พลังงาน/, blockKw: 'ความแรงคริ' },
+     { linePattern: /พันฟ|ฟันฟ|ฟื้น|พลังงาน/, blockKw: 'อัตราคริ'  },
   ];
 
   let best = null, bestScore = 0;
@@ -608,13 +609,17 @@ function bestKeywordMatch(line, kws, regionName) {
 // Regex patterns สำหรับ TH sub — ตรงกับชื่อในเกมจริง
 const TH_SUB_PATTERNS = [
   // อัตราคริ — ต้องมี อ+ต/ั+ร pattern และตามด้วยตัวเลข
-  { re: /อ[ัต][ตร][าก][คกดถรฤ]/,        kw: 'อัตราคริ' , not: /ชํา|ชำ|นาญ/ },
-  { re: /อ[ยก][กย]เรา|อตเรา|อยเรา/,     kw: 'อัตราคริ', not: /ชํา|ชำ|นาญ/  },
-  { re: /อตรา[คกดถร]/,                   kw: 'อัตราคริ' , not: /ชํา|ชำ|นาญ/ },
+  { re: /อ[ัต][ตร][าก][คกดถรฤ]/,        kw: 'อัตราคริ' },
+  { re: /อ[ยก][กย]เรา|อตเรา|อยเรา/,     kw: 'อัตราคริ'  },
+  { re: /อตรา[คกดถร]/,                   kw: 'อัตราคริ'  },
+
+
+
+  
 
   // ความแรงคริ — ต้องมี แรง/แรง และ ห้ามมี ชํานาญ/ชำนาญ/นาญ อยู่ด้วย
-  { re: /[คดถก]วามแรง[คกดถตรฤ]/,         kw: 'ความแรงคริ', not: /ชํา|ชำ|นาญ/ },
-  { re: /[คดถก]วามเสียหาย[คกดถตร]/,      kw: 'ความแรงคริ', not: /ชํา|ชำ|นาญ/ },
+  { re: /[คดถก]วามแรง[คกดถตรฤ]/,         kw: 'ความแรงคริ' },
+  { re: /[คดถก]วามเสียหาย[คกดถตร]/,      kw: 'ความแรงคริ' },
 ];
 
 function filterText(rawText, regionName) {
@@ -624,12 +629,12 @@ function filterText(rawText, regionName) {
   for (const line of lines) {
     let kw = null;
     if (lang === 'th' && regionName !== 'Main') {
-      for (const p of TH_SUB_PATTERNS) {
-        if (p.re.test(line) && kws.includes(p.kw) && !(p.not && p.not.test(line))) {
+   for (const p of TH_SUB_PATTERNS) {
+        if (p.re.test(line) && kws.includes(p.kw) ) {
           kw = p.kw; break;
         }
-      }
-    }
+  }
+}
     if (!kw) kw = bestKeywordMatch(line, kws, regionName);
     if (kw) {
       log(`[MATCH] "${line}" → "${kw}"`);
