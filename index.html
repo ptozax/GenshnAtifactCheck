@@ -221,13 +221,13 @@
             <label>Interval</label>
             <input type="range" min="100" max="5000" step="100" value="100" id="intervalSlider"
               oninput="scanInterval=parseInt(this.value);restartLoop();this.nextElementSibling.textContent=this.value+'ms'">
-            <span class="sval">1000ms</span>
+            <span class="sval">100ms</span>
           </div>
           <div class="srow">
             <label>Diff %</label>
             <input type="range" min="0.00" max="0.1" step="0.005" value="0.005" id="diffSlider"
               oninput="diffThreshold=parseFloat(this.value);this.nextElementSibling.textContent=(this.value*100).toFixed(1)+'%'">
-            <span class="sval" style="color:var(--text-dim)">2.5%</span>
+            <span class="sval" style="color:var(--text-dim)">0.5%</span>
           </div>
           <div class="toggle-row">
             <div><div class="toggle-label">Show Overlay</div><div class="toggle-desc">แสดงกรอบ region บนหน้าจอ</div></div>
@@ -492,20 +492,46 @@ async function runScan() {
 
 function prepareForOCR(src) {
   const SCALE = 3;
-  const w = src.width * SCALE, h = src.height * SCALE;
-  const c = document.createElement('canvas');
-  c.width = w; c.height = h;
-  const cx = c.getContext('2d');
-  cx.imageSmoothingEnabled = false;
-  cx.drawImage(src, 0, 0, w, h);
-  const id = cx.getImageData(0, 0, w, h), d = id.data;
+  const w = src.width * SCALE;
+  const h = src.height * SCALE;
+
+  const canvas = document.createElement('canvas');
+  canvas.width = w;
+  canvas.height = h;
+
+  const ctx = canvas.getContext('2d');
+  ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(src, 0, 0, w, h);
+
+  let imgData = ctx.getImageData(0, 0, w, h);
+  let d = imgData.data;
+
+  // 1️⃣ เพิ่ม contrast ก่อน
+  const contrast = 80; // ลองปรับ 50-120
+  const factor = (259 * (contrast + 255)) / (255 * (259 - contrast));
+
   for (let i = 0; i < d.length; i += 4) {
-    const gray = (d[i]*77 + d[i+1]*150 + d[i+2]*29) >> 8;
-    const v = gray > 140 ? 255 : 0;
-    d[i] = d[i+1] = d[i+2] = v;
+    let r = d[i];
+    let g = d[i + 1];
+    let b = d[i + 2];
+
+    // grayscale
+    let gray = (r * 77 + g * 150 + b * 29) >> 8;
+
+    // contrast boost
+    gray = factor * (gray - 128) + 128;
+
+    // 2️⃣ adaptive threshold แบบง่าย
+    let v = gray > 160 ? 255 : 0;
+
+    // 3️⃣ invert ถ้าพื้นหลังเข้ม
+    v = 255 - v;
+
+    d[i] = d[i + 1] = d[i + 2] = v;
   }
-  cx.putImageData(id, 0, 0);
-  return c;
+
+  ctx.putImageData(imgData, 0, 0);
+  return canvas;
 }
 
 async function getWorker(l) {
@@ -576,6 +602,7 @@ function bestKeywordMatch(line, kws, regionName) {
   // Negative guard — ถ้า line มีคำเหล่านี้ ห้าม match keyword บางตัว
   const NEGATIVE_GUARDS = [
     { linePattern: /ชํา|ชำ|นาญ|ชาน/,  blockKw: 'ความแรงคริ' },
+    { linePattern: /ชํา|ชำ|นาญ|ชาน/,  blockKw: 'อัตราคริ' },
     { linePattern: /พันฟ|ฟันฟ|ฟื้น|พลังงาน/, blockKw: 'อัตราคริ'  },
     { linePattern: /พันฟ|ฟันฟ|ฟื้น|พลังงาน/, blockKw: 'ความแรงคริ' },
   ];
@@ -667,7 +694,8 @@ function displayResults(results) {
   }
   if (found === 0)     setStatus('not-found', '❌', 'ไม่พบ Sub ที่สนใจ');
   else if (found >= 3) setStatus('found-3', '💎', `พบ ${found} — Rare ATF! 🎉`);
-  else                 setStatus('found-2', '✅', `พบ ${found} Sub ที่สนใจ`);
+  else if (found >= 2) setStatus('found-2', '✅', `พบ ${found} Sub ที่สนใจ`);
+  else                 etStatus('not-found', '❌', `พบ ${found} Sub ที่สนใจ`)
 }
 
 function tagClass(t) {
