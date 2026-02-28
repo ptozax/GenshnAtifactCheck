@@ -477,7 +477,7 @@ async function runScan() {
     cropCanvas.width = cw; cropCanvas.height = ch;
     cropCtx.drawImage(src, cx, cy, cw, ch, 0, 0, cw, ch);
     updateCropCell(name, cropCanvas);
-    const ocrCanvas = prepareForOCR(cropCanvas);
+    const ocrCanvas = prepareForOCR(cropCanvas ,name);
     try {
       const text = await ocrWithTesseract(ocrCanvas.toDataURL('image/png'));
       results[name] = filterText(text, name);
@@ -490,22 +490,34 @@ async function runScan() {
   displayResults(results);
 }
 
-function prepareForOCR(src) {
-  const SCALE = 3;
-  const w = src.width * SCALE, h = src.height * SCALE;
-  const c = document.createElement('canvas');
-  c.width = w; c.height = h;
-  const cx = c.getContext('2d');
-  cx.imageSmoothingEnabled = false;
-  cx.drawImage(src, 0, 0, w, h);
-  const id = cx.getImageData(0, 0, w, h), d = id.data;
-  for (let i = 0; i < d.length; i += 4) {
-    const gray = (d[i]*77 + d[i+1]*150 + d[i+2]*29) >> 8;
-    const v = gray > 140 ? 255 : 0;
-    d[i] = d[i+1] = d[i+2] = v;
+function prepareForOCR(src ,regionName) {
+
+  if (regionName === 'Main') {
+    return src;
+  }else {
+    // สำหรับ Sub อาจจะไม่ต้องปรับอะไรมาก เพราะเป็นตัวเลขกับสัญลักษณ์ที่ OCR มักจะอ่านได้ดีอยู่แล้ว
+    return src;
   }
-  cx.putImageData(id, 0, 0);
-  return c;
+
+
+
+
+
+  // const SCALE = 3;
+  // const w = src.width * SCALE, h = src.height * SCALE;
+  // const c = document.createElement('canvas');
+  // c.width = w; c.height = h;
+  // const cx = c.getContext('2d');
+  // cx.imageSmoothingEnabled = false;
+  // cx.drawImage(src, 0, 0, w, h);
+  // const id = cx.getImageData(0, 0, w, h), d = id.data;
+  // for (let i = 0; i < d.length; i += 4) {
+  //   const gray = (d[i]*77 + d[i+1]*150 + d[i+2]*29) >> 8;
+  //   const v = gray > 140 ? 255 : 0;
+  //   d[i] = d[i+1] = d[i+2] = v;
+  // }
+  // cx.putImageData(id, 0, 0);
+  // return c;
 }
 
 async function getWorker(l) {
@@ -575,8 +587,8 @@ function bestKeywordMatch(line, kws, regionName) {
 
   // Negative guard — ถ้า line มีคำเหล่านี้ ห้าม match keyword บางตัว
   const NEGATIVE_GUARDS = [
-    { linePattern: /ชํา|ชำ|นาญ|ชาน/,  blockKw: 'ความแรงคริ' },
-    { linePattern: /ชํา|ชำ|นาญ|ชาน/,  blockKw: 'อัตราคริ' },
+    { linePattern: /ชํา|ชำ|นาญ|ชาน|พลัง/,  blockKw: 'ความแรงคริ' },
+    { linePattern: /ชํา|ชำ|นาญ|ชาน|พลัง/,  blockKw: 'อัตราคริ' },
     { linePattern: /พันฟ|ฟันฟ|ฟื้น|พลังงาน/, blockKw: 'ความแรงคริ' },
      { linePattern: /พันฟ|ฟันฟ|ฟื้น|พลังงาน/, blockKw: 'อัตราคริ'  },
   ];
@@ -672,7 +684,8 @@ function displayResults(results) {
   }
   if (found === 0)     setStatus('not-found', '❌', 'ไม่พบ Sub ที่สนใจ');
   else if (found >= 3) setStatus('found-3', '💎', `พบ ${found} — Rare ATF! 🎉`);
-  else                 setStatus('found-2', '✅', `พบ ${found} Sub ที่สนใจ`);
+  else if (found == 2) setStatus('found-2', '✅', `พบ ${found} Sub ที่สนใจ`);
+  else                 setStatus('not-found', '❌', `พบ ${found} Sub ที่สนใจ`);
 }
 
 function tagClass(t) {
