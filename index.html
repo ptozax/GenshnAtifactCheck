@@ -14,34 +14,43 @@
     --green:#5cba7c;--purple:#a07adc;--red:#c85050;--blue:#6aabdc;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
-  body{font-family:'Rajdhani',sans-serif;background:var(--bg-deep);color:var(--text);min-height:100vh;}
-  body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  body{font-family:'Rajdhani',sans-serif;background:var(--bg-deep);color:var(--text);min-height:100vh;transition:background-color 0.6s ease;}
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;transition:background 0.6s ease;
     background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(200,169,110,0.06) 0%,transparent 60%),
                radial-gradient(ellipse 40% 60% at 80% 80%,rgba(100,80,200,0.04) 0%,transparent 50%);}
-  .app{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:18px 20px;}
 
-  /* Header */
+  body.status-not-found{background-color:#1a0505;}
+  body.status-not-found::before{background:
+    radial-gradient(ellipse 100% 60% at 50% 0%,rgba(200,50,50,0.35) 0%,transparent 70%),
+    radial-gradient(ellipse 60% 80% at 50% 100%,rgba(180,30,30,0.20) 0%,transparent 70%);}
+
+  body.status-found-2{background-color:#050f08;}
+  body.status-found-2::before{background:
+    radial-gradient(ellipse 100% 60% at 50% 0%,rgba(60,200,100,0.30) 0%,transparent 70%),
+    radial-gradient(ellipse 60% 80% at 50% 100%,rgba(40,160,80,0.18) 0%,transparent 70%);}
+
+  body.status-found-3{background-color:#08050f;}
+  body.status-found-3::before{background:
+    radial-gradient(ellipse 100% 60% at 50% 0%,rgba(180,100,255,0.45) 0%,transparent 65%),
+    radial-gradient(ellipse 80% 80% at 20% 80%,rgba(120,60,220,0.30) 0%,transparent 60%),
+    radial-gradient(ellipse 60% 60% at 80% 60%,rgba(200,80,255,0.25) 0%,transparent 60%);}
+  @keyframes pulse-found3{0%,100%{opacity:1}50%{opacity:0.55}}
+  body.status-found-3::before{animation:pulse-found3 1.6s ease infinite;}
+  .app{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:18px 20px;}
   header{text-align:center;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border-gold);position:relative;}
   header::after{content:'';position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);width:180px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
   .title-main{font-family:'Cinzel',serif;font-size:1.75rem;font-weight:900;background:linear-gradient(135deg,var(--gold-dim) 0%,var(--gold-bright) 50%,var(--gold-dim) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:0.12em;text-transform:uppercase;}
   .title-sub{font-size:0.76rem;color:var(--text-dim);letter-spacing:0.22em;text-transform:uppercase;margin-top:3px;}
-
-  /* Tabs */
   .tabs{display:flex;gap:2px;background:var(--bg-panel);border:1px solid var(--border);border-radius:8px;padding:3px;margin-bottom:16px;}
   .tab-btn{flex:1;padding:7px 12px;background:none;border:none;color:var(--text-dim);font-family:'Rajdhani',sans-serif;font-size:0.82rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;border-radius:6px;transition:all 0.2s;}
   .tab-btn.active{background:var(--bg-card);color:var(--gold);border:1px solid var(--border-gold);}
   .tab-btn:hover:not(.active){color:var(--text);}
-  .tab-content{display:none;}
-  .tab-content.active{display:block;}
-
-  /* Layout */
+  .tab-content{display:none;} .tab-content.active{display:block;}
   .two-col{display:grid;grid-template-columns:1.15fr 0.85fr;gap:14px;}
   @media(max-width:720px){.two-col{grid-template-columns:1fr;}}
   .panel-card{background:var(--bg-panel);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:12px;}
   .panel-card:last-child{margin-bottom:0;}
   .panel-title{font-family:'Cinzel',serif;font-size:0.7rem;color:var(--gold-dim);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px;}
-
-  /* Buttons */
   .btn-row{display:flex;gap:7px;margin-bottom:10px;}
   .btn{padding:8px 13px;border-radius:7px;font-family:'Rajdhani',sans-serif;font-size:0.8rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;transition:all 0.2s;border:1px solid;flex:1;}
   .btn-primary{background:linear-gradient(135deg,#2a2010,#3a2e18);border-color:var(--gold-dim);color:var(--gold);}
@@ -50,10 +59,7 @@
   .btn-danger:hover:not(:disabled){background:rgba(200,80,80,0.15);border-color:rgba(200,80,80,0.55);}
   .btn-secondary{background:rgba(200,169,110,0.05);border-color:var(--border-gold);color:var(--text-dim);}
   .btn-secondary:hover:not(:disabled){color:var(--text);border-color:var(--gold-dim);}
-  .btn-full{width:100%;flex:none;}
-  .btn:disabled{opacity:0.3;cursor:not-allowed;}
-
-  /* Preview */
+  .btn-full{width:100%;flex:none;} .btn:disabled{opacity:0.3;cursor:not-allowed;}
   #screen-preview-wrap{position:relative;background:#060504;border:1px solid var(--border);border-radius:7px;overflow:hidden;margin-bottom:8px;min-height:110px;display:flex;align-items:center;justify-content:center;}
   @keyframes pulse-border{0%,100%{box-shadow:0 0 0 0 rgba(200,169,110,0)}50%{box-shadow:0 0 0 3px rgba(200,169,110,0.22)}}
   #screen-preview-wrap.live{animation:pulse-border 1.8s ease infinite;}
@@ -75,24 +81,17 @@
   .upload-zone{border:2px dashed var(--border-gold);border-radius:7px;padding:11px 14px;text-align:center;cursor:pointer;transition:all 0.2s;background:rgba(200,169,110,0.02);font-size:0.74rem;color:var(--text-dim);}
   .upload-zone:hover,.upload-zone.drag-over{border-color:var(--gold-dim);color:var(--text);}
   input[type=file]{display:none;}
-
-  /* Lang toggle */
   .lang-toggle{display:flex;gap:6px;margin-bottom:10px;}
   .lang-btn{flex:1;padding:7px;border-radius:7px;font-family:'Rajdhani',sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:0.06em;cursor:pointer;transition:all 0.2s;border:1px solid var(--border);background:var(--bg-card);color:var(--text-dim);text-align:center;}
   .lang-btn.active-en{border-color:rgba(200,160,80,0.6);background:rgba(200,160,80,0.1);color:#e0c070;}
   .lang-btn.active-th{border-color:rgba(92,186,124,0.6);background:rgba(92,186,124,0.1);color:var(--green);}
-
-  /* Status */
   .status-bar{border-radius:8px;padding:11px 14px;display:flex;align-items:center;gap:10px;transition:all 0.35s;margin-bottom:10px;border:1px solid transparent;min-height:46px;}
   .status-bar.idle{background:var(--bg-card);border-color:var(--border);}
   .status-bar.scanning-st{background:rgba(200,169,110,0.08);border-color:rgba(200,169,110,0.25);}
   .status-bar.not-found{background:rgba(200,80,80,0.1);border-color:rgba(200,80,80,0.3);}
   .status-bar.found-2{background:rgba(92,186,124,0.1);border-color:rgba(92,186,124,0.3);}
   .status-bar.found-3{background:rgba(160,122,220,0.12);border-color:rgba(160,122,220,0.35);}
-  .status-icon{font-size:1.2rem;}
-  .status-text{font-size:0.9rem;font-weight:600;}
-
-  /* Results */
+  .status-icon{font-size:1.2rem;} .status-text{font-size:0.9rem;font-weight:600;}
   .results-list{display:flex;flex-direction:column;gap:5px;}
   .result-row{display:flex;gap:9px;padding:6px 10px;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;animation:fadeUp 0.22s ease;}
   @keyframes fadeUp{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
@@ -104,16 +103,11 @@
   .tag.heal{background:rgba(92,186,124,0.18);border:1px solid rgba(92,186,124,0.35);color:#7dd4a0;}
   .tag.elem{background:rgba(100,160,220,0.18);border:1px solid rgba(100,160,220,0.35);color:#90c8f0;}
   .tag.none{background:rgba(100,90,70,0.1);border:1px solid var(--border);color:var(--text-dim);}
-
   .spinner{display:inline-block;width:11px;height:11px;border:2px solid var(--gold-dim);border-top-color:var(--gold);border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;margin-right:4px;}
   @keyframes spin{to{transform:rotate(360deg)}}
-
-  /* Tesseract progress */
   .tess-progress{font-size:0.7rem;color:var(--text-dim);margin-bottom:8px;min-height:16px;}
   .tess-progress .bar{height:3px;background:var(--border);border-radius:2px;margin-top:3px;overflow:hidden;}
   .tess-progress .fill{height:100%;background:var(--gold-dim);border-radius:2px;transition:width 0.3s;}
-
-  /* Debug */
   .debug-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
   @media(max-width:720px){.debug-grid{grid-template-columns:1fr;}}
   .srow{display:flex;align-items:center;gap:7px;padding:7px 11px;background:var(--bg-card);border:1px solid var(--border);border-radius:7px;margin-bottom:7px;}
@@ -121,8 +115,7 @@
   .srow input[type=range]{flex:1;}
   .sval{font-size:0.76rem;color:var(--gold);min-width:38px;text-align:right;font-weight:600;}
   .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:8px 11px;background:var(--bg-card);border:1px solid var(--border);border-radius:7px;margin-bottom:7px;}
-  .toggle-label{font-size:0.8rem;font-weight:600;}
-  .toggle-desc{font-size:0.67rem;color:var(--text-dim);margin-top:1px;}
+  .toggle-label{font-size:0.8rem;font-weight:600;} .toggle-desc{font-size:0.67rem;color:var(--text-dim);margin-top:1px;}
   .switch{position:relative;width:36px;height:20px;cursor:pointer;flex-shrink:0;}
   .switch input{display:none;}
   .switch-track{position:absolute;inset:0;background:var(--border);border-radius:10px;transition:background 0.2s;}
@@ -150,33 +143,24 @@
 </head>
 <body>
 <div class="app">
-
   <header>
     <div class="title-main">⬡ Artifact Checker</div>
     <div class="title-sub">Genshin Impact — Tesseract OCR · TH / EN</div>
   </header>
-
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('main',this)">Main</button>
     <button class="tab-btn" onclick="switchTab('debug',this)">Debug</button>
   </div>
 
-  <!-- ======= MAIN TAB ======= -->
   <div id="tab-main" class="tab-content active">
     <div class="two-col">
-
-      <!-- LEFT: capture -->
       <div>
         <div class="panel-card">
           <div class="panel-title">Screen Capture</div>
-
-          <!-- Language toggle -->
           <div class="lang-toggle">
             <div class="lang-btn active-en" id="btnLangEN" onclick="setLang('en')">🇬🇧 English</div>
             <div class="lang-btn" id="btnLangTH" onclick="setLang('th')">🇹🇭 ภาษาไทย</div>
           </div>
-
-          <!-- Subs one-box toggle (EN only) -->
           <div id="subsToggleRow" class="toggle-row" style="margin-bottom:10px;">
             <div>
               <div class="toggle-label">Scan Subs as one box</div>
@@ -187,18 +171,14 @@
               <div class="switch-track"></div><div class="switch-thumb"></div>
             </label>
           </div>
-
-          <!-- Tesseract init progress -->
           <div class="tess-progress" id="tessProgress">
             <span id="tessMsg">Tesseract พร้อมใช้งาน (จะโหลดเมื่อ Scan ครั้งแรก)</span>
             <div class="bar"><div class="fill" id="tessBar" style="width:0%"></div></div>
           </div>
-
           <div class="btn-row">
             <button class="btn btn-primary" id="btnStart" onclick="startCapture()">▶ Start Capture</button>
-            <button class="btn btn-danger"  id="btnStop"  onclick="stopCapture()" disabled>■ Stop</button>
+            <button class="btn btn-danger" id="btnStop" onclick="stopCapture()" disabled>■ Stop</button>
           </div>
-
           <div id="screen-preview-wrap">
             <div class="placeholder" id="previewPlaceholder">
               <div class="big">🎮</div>
@@ -208,21 +188,12 @@
             <div class="overlay-container" id="regionOverlay"></div>
             <div class="live-badge" id="liveBadge"><div class="live-dot"></div>LIVE</div>
           </div>
-
           <div class="scan-timing" id="scanTiming"></div>
-
-          <button class="btn btn-secondary btn-full" id="btnManualScan" onclick="runScan()" disabled style="margin-bottom:9px">
-            ✦ Manual Scan
-          </button>
-
-          <div class="upload-zone" id="uploadZone">
-            📁 Drop / Click — Upload screenshot (fallback)
-          </div>
+          <button class="btn btn-secondary btn-full" id="btnManualScan" onclick="runScan()" disabled style="margin-bottom:9px">✦ Manual Scan</button>
+          <div class="upload-zone" id="uploadZone">📁 Drop / Click — Upload screenshot (fallback)</div>
           <input type="file" id="fileInput" accept="image/*" onchange="handleScreenFile(event)">
         </div>
       </div>
-
-      <!-- RIGHT: status + results -->
       <div>
         <div class="panel-card">
           <div class="panel-title">Status</div>
@@ -231,7 +202,6 @@
             <span class="status-text" id="statusText">รอ capture...</span>
           </div>
         </div>
-
         <div class="panel-card">
           <div class="panel-title">OCR Results</div>
           <div class="results-list" id="resultsList">
@@ -239,14 +209,11 @@
           </div>
         </div>
       </div>
-
     </div>
   </div>
 
-  <!-- ======= DEBUG TAB ======= -->
   <div id="tab-debug" class="tab-content">
     <div class="debug-grid">
-      <!-- LEFT -->
       <div>
         <div class="panel-card">
           <div class="panel-title">Settings</div>
@@ -267,15 +234,12 @@
             <label class="switch"><input type="checkbox" id="overlayToggle" checked onchange="document.getElementById('regionOverlay').style.display=this.checked?'':'none'"><div class="switch-track"></div><div class="switch-thumb"></div></label>
           </div>
         </div>
-
         <div class="panel-card">
-          <div class="panel-title">Region Config (x, y, w, h  — สัดส่วน 0–1)</div>
+          <div class="panel-title">Region Config (x, y, w, h — สัดส่วน 0–1)</div>
           <div id="regionSliders" style="max-height:360px;overflow-y:auto;"></div>
           <button class="save-btn" onclick="saveConfig()">💾 Save Config</button>
         </div>
       </div>
-
-      <!-- RIGHT -->
       <div>
         <div class="panel-card">
           <div class="panel-title">Crop Preview</div>
@@ -290,24 +254,19 @@
       </div>
     </div>
   </div>
-
-</div><!-- .app -->
+</div>
 
 <video id="hidden-video" autoplay muted playsinline></video>
-
 <script>
-// ============================================================
-// CONFIG & STATE
-// ============================================================
-let regionConfig = { 
-  "Main": [ 0.616, 0.306, 0.14, 0.03 ], 
-  "Subs": [ 0.638, 0.493, 0.2, 0.15 ], 
-  "Sub1": [ 0.638, 0.49, 0.2, 0.04 ], 
-  "Sub2": [ 0.638, 0.525, 0.2, 0.04 ], 
-  "Sub3": [ 0.638, 0.56, 0.2, 0.04 ], 
-  "Sub4": [ 0.638, 0.598, 0.2, 0.04 ] };
+let regionConfig = {
+  "Main": [0.616, 0.306, 0.14,  0.03 ],
+  "Subs": [0.638, 0.493, 0.2,   0.15 ],
+  "Sub1": [0.638, 0.49,  0.2,   0.04 ],
+  "Sub2": [0.638, 0.525, 0.2,   0.04 ],
+  "Sub3": [0.638, 0.56,  0.2,   0.04 ],
+  "Sub4": [0.638, 0.598, 0.2,   0.04 ],
+};
 
-// Keywords for filtering OCR text
 const KW = {
   en: {
     main: [
@@ -343,9 +302,9 @@ const KW = {
   },
   th: {
     main: [
-      // "HP%",
-      // "ATK%",
-      // "DEF%",
+      // "พลังชีวิต",
+      // "พลังโจมตี",
+      // "พลังป้องกัน",
       "ความชำนาญธาตุ",
       "ฟื้นฟูพลังงาน",
       "โบนัสความเสียหายกายภาพ",
@@ -361,12 +320,9 @@ const KW = {
       "โบนัสการรักษา"
     ],
     sub: [
-      // "HP",
-      // "HP%",
-      // "ATK",
-      // "ATK%",
-      // "DEF",
-      // "DEF%",
+      // "พลังชีวิต",
+      // "พลังโจมตี",
+      // "พลังป้องกัน",
       // "ความชำนาญธาตุ",
       // "ฟื้นฟูพลังงาน",
       "อัตราคริ",
@@ -375,17 +331,9 @@ const KW = {
   }
 };
 
-let lang = 'en';              // 'en' | 'th'
-let scanOneBox = true;        // EN: use Subs region; TH: always separate Sub1-4
-let scanInterval  = 1000;
-let diffThreshold = 0.025;
-let mediaStream   = null;
-let liveLoopTimer = null;
-let lastGrayData  = null;
-let isOcrBusy     = false;
-let currentStaticImage = null;
-
-// Tesseract workers — one per language, created lazily
+let lang = 'en', scanOneBox = true, scanInterval = 1000, diffThreshold = 0.025;
+let mediaStream = null, liveLoopTimer = null, lastGrayData = null;
+let isOcrBusy = false, currentStaticImage = null;
 const workers = { en: null, th: null };
 let workerLoading = { en: false, th: false };
 
@@ -393,29 +341,17 @@ const video  = document.getElementById('hidden-video');
 const canvas = document.getElementById('screen-canvas');
 const ctx    = canvas.getContext('2d', { willReadFrequently: true });
 
-// ============================================================
-// LANGUAGE TOGGLE
-// ============================================================
 function setLang(l) {
   lang = l;
   document.getElementById('btnLangEN').className = 'lang-btn' + (l==='en' ? ' active-en' : '');
   document.getElementById('btnLangTH').className = 'lang-btn' + (l==='th' ? ' active-th' : '');
-  // Thai always scans separate boxes; show/hide the toggle
   const row = document.getElementById('subsToggleRow');
-  if (l === 'th') {
-    scanOneBox = false;
-    document.getElementById('scanOneBox').checked = false;
-    row.style.display = 'none';
-  } else {
-    row.style.display = 'flex';
-  }
+  if (l === 'th') { scanOneBox = false; document.getElementById('scanOneBox').checked = false; row.style.display = 'none'; }
+  else { row.style.display = 'flex'; }
   log(`[INFO] Language: ${l === 'en' ? 'English' : 'Thai'}`);
   getWorker(l);
 }
 
-// ============================================================
-// TABS
-// ============================================================
 function switchTab(tab, btn) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
@@ -423,9 +359,6 @@ function switchTab(tab, btn) {
   document.getElementById('tab-' + tab).classList.add('active');
 }
 
-// ============================================================
-// SCREEN CAPTURE  (getDisplayMedia)
-// ============================================================
 async function startCapture() {
   try {
     const stream = await navigator.mediaDevices.getDisplayMedia({ video: { frameRate: 10 }, audio: false });
@@ -467,42 +400,29 @@ function stopCapture() {
   log('[INFO] Capture stopped');
 }
 
-// ============================================================
-// LIVE LOOP — diff check → OCR only when screen changes
-// ============================================================
-function startLiveLoop() {
-  if (liveLoopTimer) clearInterval(liveLoopTimer);
-  liveLoopTimer = setInterval(liveFrame, scanInterval);
-}
-function restartLoop() { if (mediaStream) startLiveLoop(); }
+function startLiveLoop() { if (liveLoopTimer) clearInterval(liveLoopTimer); liveLoopTimer = setInterval(liveFrame, scanInterval); }
+function restartLoop()   { if (mediaStream) startLiveLoop(); }
 
 async function liveFrame() {
   if (!mediaStream || isOcrBusy || video.readyState < 2) return;
-
-  // Draw latest frame
   ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
   drawOverlay();
-
-  // Diff check on appropriate region
   const diffRegion = (lang === 'en' && scanOneBox) ? 'Subs' : 'Sub1';
   const [rx, ry, rw, rh] = regionConfig[diffRegion];
   const sx = Math.floor(rx * canvas.width),  sy = Math.floor(ry * canvas.height);
   const sw = Math.floor(rw * canvas.width),  sh = Math.floor(rh * canvas.height);
   if (sw < 4 || sh < 4) return;
-
   const gray = toGray(ctx.getImageData(sx, sy, sw, sh).data);
   if (lastGrayData && lastGrayData.length === gray.length) {
     let diff = 0;
     for (let i = 0; i < gray.length; i++) diff += Math.abs(gray[i] - lastGrayData[i]);
-    if (diff / (sw * sh * 255) < diffThreshold) return; // no change
+    if (diff / (sw * sh * 255) < diffThreshold) return;
   }
   lastGrayData = gray;
-
   isOcrBusy = true;
   const t0 = performance.now();
   await runScan();
-  const ms = (performance.now() - t0).toFixed(0);
-  document.getElementById('scanTiming').innerHTML = `Last OCR: <span>${ms}ms</span> | Δ triggered`;
+  document.getElementById('scanTiming').innerHTML = `Last OCR: <span>${(performance.now()-t0).toFixed(0)}ms</span> | Δ triggered`;
   isOcrBusy = false;
 }
 
@@ -513,17 +433,13 @@ function toGray(rgba) {
   return g;
 }
 
-// ============================================================
-// OVERLAY
-// ============================================================
 function drawOverlay() {
   const ov = document.getElementById('regionOverlay');
   ov.innerHTML = '';
   const cW = canvas.offsetWidth, cH = canvas.offsetHeight;
   if (!cW || !cH) return;
-  const colors = { Main: 'rgba(200,169,110,0.9)', Subs: 'rgba(160,122,220,0.8)', Sub1: 'rgba(92,186,124,0.8)', Sub2: 'rgba(92,186,124,0.8)', Sub3: 'rgba(92,186,124,0.8)', Sub4: 'rgba(92,186,124,0.8)' };
+  const colors = { Main:'rgba(200,169,110,0.9)', Subs:'rgba(160,122,220,0.8)', Sub1:'rgba(92,186,124,0.8)', Sub2:'rgba(92,186,124,0.8)', Sub3:'rgba(92,186,124,0.8)', Sub4:'rgba(92,186,124,0.8)' };
   for (const [name, [rx, ry, rw, rh]] of Object.entries(regionConfig)) {
-    // Show Subs only in EN+oneBox mode; show Sub1-4 otherwise
     if (name === 'Subs' && !(lang === 'en' && scanOneBox)) continue;
     if (['Sub1','Sub2','Sub3','Sub4'].includes(name) && lang === 'en' && scanOneBox) continue;
     const box = document.createElement('div');
@@ -534,19 +450,12 @@ function drawOverlay() {
   }
 }
 
-// ============================================================
-// SCAN — crop each region → OCR → display
-// ============================================================
 async function runScan() {
-  const hasLive   = !!mediaStream;
-  const hasStatic = !!currentStaticImage;
+  const hasLive = !!mediaStream, hasStatic = !!currentStaticImage;
   if (!hasLive && !hasStatic) return;
-
   const W = hasLive ? canvas.width  : currentStaticImage.naturalWidth;
   const H = hasLive ? canvas.height : currentStaticImage.naturalHeight;
   const src = hasLive ? canvas : currentStaticImage;
-
-  // Draw static image onto canvas if needed
   if (!hasLive && hasStatic) {
     canvas.width = W; canvas.height = H;
     ctx.drawImage(currentStaticImage, 0, 0);
@@ -554,69 +463,44 @@ async function runScan() {
     document.getElementById('previewPlaceholder').style.display = 'none';
     drawOverlay();
   }
-
   if (!hasLive) setStatus('scanning-st', '<span class="spinner"></span>', 'กำลัง OCR...');
-
   const cropCanvas = document.createElement('canvas');
   const cropCtx    = cropCanvas.getContext('2d');
   const results    = {};
-
-  // Pick regions: EN+oneBox → Main+Subs; TH or separate → Main+Sub1-4
-  const subRegions = (lang === 'en' && scanOneBox)
-    ? ['Subs']
-    : ['Sub1', 'Sub2', 'Sub3', 'Sub4'];
-  const regions = ['Main', ...subRegions];
-
-  // OCR each region separately
+  const subRegions = (lang === 'en' && scanOneBox) ? ['Subs'] : ['Sub1','Sub2','Sub3','Sub4'];
+  const regions    = ['Main', ...subRegions];
   for (const [name, [rx, ry, rw, rh]] of Object.entries(regionConfig)) {
     if (!regions.includes(name)) continue;
     const cx = Math.floor(rx * W), cy = Math.floor(ry * H);
     const cw = Math.floor(rw * W), ch = Math.floor(rh * H);
     if (cw < 4 || ch < 4) continue;
-
     cropCanvas.width = cw; cropCanvas.height = ch;
     cropCtx.drawImage(src, cx, cy, cw, ch, 0, 0, cw, ch);
     updateCropCell(name, cropCanvas);
-
-    // Preprocess: upscale small crops for better OCR accuracy
     const ocrCanvas = prepareForOCR(cropCanvas);
-
     try {
       const text = await ocrWithTesseract(ocrCanvas.toDataURL('image/png'));
       results[name] = filterText(text, name);
-      const raw = text.trim().substring(0, 60).replace(/\n/g, ' | ');
-      log(`[OCR] ${name}: "${raw}" → ${JSON.stringify(results[name])}`);
-    } catch (e) {
+      log(`[OCR] ${name}: "${text.trim().substring(0,60).replace(/\n/g,' | ')}" → ${JSON.stringify(results[name])}`);
+    } catch(e) {
       results[name] = [];
       log(`[ERR] OCR ${name}: ${e.message}`);
     }
   }
-
   displayResults(results);
 }
 
-// ============================================================
-// PREPROCESSING — upscale + grayscale + contrast for Tesseract
-// ============================================================
 function prepareForOCR(src) {
-  const SCALE = 3; // upscale 3x — Tesseract works better on larger images
-  const w = src.width  * SCALE;
-  const h = src.height * SCALE;
+  const SCALE = 3;
+  const w = src.width * SCALE, h = src.height * SCALE;
   const c = document.createElement('canvas');
   c.width = w; c.height = h;
   const cx = c.getContext('2d');
-
-  // Disable antialiasing for crisp text
   cx.imageSmoothingEnabled = false;
   cx.drawImage(src, 0, 0, w, h);
-
-  // Boost contrast — convert to grayscale + threshold
-  const id = cx.getImageData(0, 0, w, h);
-  const d  = id.data;
+  const id = cx.getImageData(0, 0, w, h), d = id.data;
   for (let i = 0; i < d.length; i += 4) {
-    // Grayscale
     const gray = (d[i]*77 + d[i+1]*150 + d[i+2]*29) >> 8;
-    // Threshold: push toward black or white
     const v = gray > 140 ? 255 : 0;
     d[i] = d[i+1] = d[i+2] = v;
   }
@@ -624,39 +508,23 @@ function prepareForOCR(src) {
   return c;
 }
 
-// ============================================================
-// TESSERACT OCR
-// ============================================================
 async function getWorker(l) {
   if (workers[l]) return workers[l];
-  if (workerLoading[l]) {
-    while (workerLoading[l]) await sleep(120);
-    return workers[l];
-  }
+  if (workerLoading[l]) { while (workerLoading[l]) await sleep(120); return workers[l]; }
   workerLoading[l] = true;
-
   await loadScript('https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js');
-
   const tessLang = l === 'th' ? 'tha' : 'eng';
   log(`[INFO] Loading Tesseract "${tessLang}"...`);
   setTessProgress(10, `กำลังโหลด Tesseract (${tessLang})...`);
-
   workers[l] = await Tesseract.createWorker(tessLang, 1, {
     logger: m => {
-      if (m.status === 'loading tesseract core') setTessProgress(20, 'Loading core...');
-      if (m.status === 'initializing tesseract') setTessProgress(40, 'Initializing...');
+      if (m.status === 'loading tesseract core')       setTessProgress(20, 'Loading core...');
+      if (m.status === 'initializing tesseract')       setTessProgress(40, 'Initializing...');
       if (m.status === 'loading language traineddata') setTessProgress(60, `Loading ${tessLang} data...`);
-      if (m.status === 'initialized api') setTessProgress(100, '✓ Tesseract ready');
+      if (m.status === 'initialized api')              setTessProgress(100, '✓ Tesseract ready');
     }
   });
-
-  // Thai-specific config: PSM 7 = single line, helpful for stat lines
-  if (l === 'th') {
-    await workers[l].setParameters({
-      tessedit_pageseg_mode: '6', // PSM 6 = uniform block of text
-    });
-  }
-
+  if (l === 'th') await workers[l].setParameters({ tessedit_pageseg_mode: '6' });
   workerLoading[l] = false;
   log(`[INFO] Tesseract (${tessLang}) ready`);
   setTessProgress(100, `✓ Tesseract (${tessLang}) พร้อมใช้งาน`);
@@ -684,36 +552,33 @@ function setTessProgress(pct, msg) {
 }
 
 // ============================================================
-// KEYWORD FILTER
+// FUZZY MATCH
 // ============================================================
-// ============================================================
-// FUZZY MATCH — tolerant ต่อ OCR errors ของ Tesseract Thai
-// ============================================================
-
-/** Bigram similarity (Dice) */
 function bigramSim(a, b) {
   if (a.length < 2 || b.length < 2) return 0;
   const bg = s => { const r = []; for (let i=0;i<s.length-1;i++) r.push(s.slice(i,i+2)); return r; };
   const bA = bg(a), bB = [...bg(b)];
   let hits = 0;
-  for (const x of bA) { const i = bB.indexOf(x); if (i!==-1){hits++;bB.splice(i,1);} }
-  return (2*hits)/(bA.length+bg(b).length);
+  for (const x of bA) { const i = bB.indexOf(x); if (i !== -1) { hits++; bB.splice(i, 1); } }
+  return (2 * hits) / (bA.length + bg(b).length);
 }
 
-/** Character overlap — เช็คว่ากี่ % ของ keyword chars ปรากฏใน line */
 function charOverlap(line, kw) {
-  const pool = [...line];
-  let hits = 0;
-  for (const c of kw) {
-    const i = pool.indexOf(c);
-    if (i !== -1) { hits++; pool.splice(i,1); }
-  }
+  const pool = [...line]; let hits = 0;
+  for (const c of kw) { const i = pool.indexOf(c); if (i !== -1) { hits++; pool.splice(i, 1); } }
   return hits / kw.length;
 }
 
-function bestKeywordMatch(line, kws) {
-  const clean  = s => s.replace(/[0-9+\-%.\/\s]/g,'');
-  const lineC  = clean(line);
+function bestKeywordMatch(line, kws, regionName) {
+  const clean = s => s.replace(/[0-9+\-%.\/\s]/g, '');
+  const lineC = clean(line);
+
+  // Negative guard — ถ้า line มีคำเหล่านี้ ห้าม match keyword บางตัว
+  const NEGATIVE_GUARDS = [
+    { linePattern: /ชํา|ชำ|นาญ|ชาน/,  blockKw: 'ความแรงคริ' },
+    { linePattern: /พันฟ|ฟันฟ|ฟื้น|พลังงาน/, blockKw: 'อัตราคริ'  },
+    { linePattern: /พันฟ|ฟันฟ|ฟื้น|พลังงาน/, blockKw: 'ความแรงคริ' },
+  ];
 
   let best = null, bestScore = 0;
 
@@ -721,63 +586,60 @@ function bestKeywordMatch(line, kws) {
     const kwC = clean(kw);
     if (!kwC) continue;
 
+    // ตรวจ negative guard ก่อน
+    const blocked = NEGATIVE_GUARDS.some(g => g.blockKw === kw && g.linePattern.test(line));
+    if (blocked) continue;
+
     // 1. Exact substring
     if (line.toLowerCase().includes(kw.toLowerCase())) return kw;
 
     // 2. Char overlap + bigram
-    const overlap = charOverlap(lineC, kwC);
-    const bigram  = bigramSim(lineC, kwC);
-    const score   = overlap * 0.7 + bigram * 0.3;
-
+    const score = charOverlap(lineC, kwC) * 0.7 + bigramSim(lineC, kwC) * 0.3;
     if (score > bestScore) { bestScore = score; best = kw; }
   }
 
-  // threshold ต่ำสำหรับ TH เพราะ Tesseract ตัดตัวอักษรเยอะ
-  const threshold = lang === 'th' ? 0.38 : 0.60;
+  const threshold = lang === 'th'
+    ? (regionName === 'Main' ? 0.60 : 0.38)
+    : 0.60;
 
   return bestScore >= threshold ? best : null;
 }
 
-// Pattern ตรวจ sub stat ไทยเพิ่มเติม — จับ "อตรา/อัตรา/อยกเรา + ตัวเลข%"
+// Regex patterns สำหรับ TH sub — ตรงกับชื่อในเกมจริง
 const TH_SUB_PATTERNS = [
- {re:/อ[ัต][ตร][าก][คกดถรฤ]/,        kw:'อัตราคริ'},
-  {re:/อ[ยย][กก]เรา|อตเรา|อตรา[ดถ]/,  kw:'อัตราคริ'},
-  {re:/[คดถก]วามแรง[คกดถ]/,            kw:'ความแรงคริ'},
-  {re:/[คดถก]วามเสีย/,                 kw:'ความแรงคริ'},
+  // อัตราคริ — ต้องมี อ+ต/ั+ร pattern และตามด้วยตัวเลข
+  { re: /อ[ัต][ตร][าก][คกดถรฤ]/,        kw: 'อัตราคริ' , not: /ชํา|ชำ|นาญ/ },
+  { re: /อ[ยก][กย]เรา|อตเรา|อยเรา/,     kw: 'อัตราคริ', not: /ชํา|ชำ|นาญ/  },
+  { re: /อตรา[คกดถร]/,                   kw: 'อัตราคริ' , not: /ชํา|ชำ|นาญ/ },
+
+  // ความแรงคริ — ต้องมี แรง/แรง และ ห้ามมี ชํานาญ/ชำนาญ/นาญ อยู่ด้วย
+  { re: /[คดถก]วามแรง[คกดถตรฤ]/,         kw: 'ความแรงคริ', not: /ชํา|ชำ|นาญ/ },
+  { re: /[คดถก]วามเสียหาย[คกดถตร]/,      kw: 'ความแรงคริ', not: /ชํา|ชำ|นาญ/ },
 ];
 
 function filterText(rawText, regionName) {
-  const kws = regionName === 'Main' ? KW[lang].main : KW[lang].sub;
+  const kws   = regionName === 'Main' ? KW[lang].main : KW[lang].sub;
   const lines = rawText.split('\n').map(l => l.trim()).filter(l => l.length > 1);
   const matched = [];
-
   for (const line of lines) {
     let kw = null;
-
-    // Pattern matching สำหรับ sub TH ก่อน (เร็วและแม่น)
     if (lang === 'th' && regionName !== 'Main') {
       for (const p of TH_SUB_PATTERNS) {
-        if (p.re.test(line) && kws.includes(p.kw)) {
-          kw = p.kw;
-          break;
+        if (p.re.test(line) && kws.includes(p.kw) && !(p.not && p.not.test(line))) {
+          kw = p.kw; break;
         }
       }
     }
-
-    // Fallback: fuzzy
-    if (!kw) kw = bestKeywordMatch(line, kws);
-
+    if (!kw) kw = bestKeywordMatch(line, kws, regionName);
     if (kw) {
       log(`[MATCH] "${line}" → "${kw}"`);
       matched.push(kw);
     } else if (lang === 'th') {
-      // Debug score
-      const clean = s => s.replace(/[0-9+\-%.\/\s]/g,'');
+      const clean = s => s.replace(/[0-9+\-%.\/\s]/g, '');
       const lineC = clean(line);
       let dbg = '';
       for (const k of kws) {
-        const kC = clean(k);
-        const sc = (charOverlap(lineC,kC)*0.7 + bigramSim(lineC,kC)*0.3).toFixed(2);
+        const sc = (charOverlap(lineC, clean(k)) * 0.7 + bigramSim(lineC, clean(k)) * 0.3).toFixed(2);
         dbg += ` [${k.slice(0,4)}:${sc}]`;
       }
       log(`[DBG] "${line.slice(0,22)}"${dbg}`);
@@ -793,7 +655,6 @@ function displayResults(results) {
   const list = document.getElementById('resultsList');
   list.innerHTML = '';
   let found = 0;
-
   for (const [name, texts] of Object.entries(results)) {
     const row = document.createElement('div');
     row.className = 'result-row';
@@ -804,19 +665,18 @@ function displayResults(results) {
     list.appendChild(row);
     found += texts.length;
   }
-
   if (found === 0)     setStatus('not-found', '❌', 'ไม่พบ Sub ที่สนใจ');
   else if (found >= 3) setStatus('found-3', '💎', `พบ ${found} — Rare ATF! 🎉`);
   else                 setStatus('found-2', '✅', `พบ ${found} Sub ที่สนใจ`);
 }
 
 function tagClass(t) {
-  const l = t.toLowerCase();
-  if (l.includes('rate') || l.includes('อัตราคริ') || l.includes('คริติคอลเรท')) return 'crit';
-  if (l.includes('dmg')  || l.includes('crit dmg') || l.includes('ดาเมจ'))       return 'dmg';
-  if (l.includes('heal') || l.includes('ฟื้นฟู'))                                return 'heal';
-  if (l.includes('elem') || l.includes('mastery')  || l.includes('ชำนาญ'))       return 'elem';
-  return 'crit'; // default for anything with crit keywords
+  if (t === 'Crit Rate'   || t === 'อัตราคริ')   return 'crit';
+  if (t === 'Crit DMG'    || t === 'ความแรงคริ')  return 'dmg';
+  if (t.includes('Healing')  || t.includes('การรักษา') || t.includes('ฟื้นฟู')) return 'heal';
+  if (t.includes('Mastery')  || t.includes('Recharge')  || t.includes('DMG Bonus') ||
+      t.includes('ชำนาญ')   || t.includes('พลังงาน')   || t.includes('โบนัส'))    return 'elem';
+  return 'crit';
 }
 
 function setStatus(cls, icon, txt) {
@@ -824,6 +684,11 @@ function setStatus(cls, icon, txt) {
   bar.className = 'status-bar ' + cls;
   bar.querySelector('.status-icon').innerHTML = icon;
   bar.querySelector('#statusText').textContent = txt;
+  // Update body background
+  document.body.className = document.body.className
+    .replace(/\bstatus-\S+/g, '').trim();
+  if (cls && cls !== 'idle' && cls !== 'scanning-st')
+    document.body.classList.add('status-' + cls);
 }
 
 // ============================================================
@@ -849,7 +714,7 @@ function buildRegionSliders() {
     const sec = document.createElement('div'); sec.className = 'region-section';
     sec.innerHTML = `<div class="region-header">${key}</div>`;
     const grid = document.createElement('div'); grid.className = 'region-sliders';
-    ['x', 'y', 'w', 'h'].forEach((lbl, i) => {
+    ['x','y','w','h'].forEach((lbl, i) => {
       const item = document.createElement('div'); item.className = 'slider-item';
       item.innerHTML = `<label>${lbl.toUpperCase()}</label>
         <div class="slider-row">
@@ -863,17 +728,11 @@ function buildRegionSliders() {
   }
 }
 
-function updateRegion(key, idx, val) {
-  regionConfig[key][idx] = parseFloat(val);
-  drawOverlay();
-}
+function updateRegion(key, idx, val) { regionConfig[key][idx] = parseFloat(val); drawOverlay(); }
 
-// ============================================================
-// CROP CELLS (Debug)
-// ============================================================
 function buildCropGrid() {
   const g = document.getElementById('cropGrid'); g.innerHTML = '';
-  ['Main', 'Subs', 'Sub1', 'Sub2', 'Sub3', 'Sub4'].forEach(n => {
+  ['Main','Subs','Sub1','Sub2','Sub3','Sub4'].forEach(n => {
     const c = document.createElement('div'); c.className = 'crop-cell'; c.id = 'crop-' + n;
     c.innerHTML = `<div class="crop-cell-label">${n}</div><div class="crop-placeholder">—</div>`;
     g.appendChild(c);
@@ -888,9 +747,6 @@ function updateCropCell(name, src) {
   cell.appendChild(c);
 }
 
-// ============================================================
-// UPLOAD FALLBACK
-// ============================================================
 function handleScreenFile(e) { const f = e.target.files[0]; if (f) loadImageFile(f); }
 function loadImageFile(file) {
   const r = new FileReader();
@@ -911,15 +767,12 @@ function loadImageFile(file) {
   r.readAsDataURL(file);
 }
 
-// ============================================================
-// LOG
-// ============================================================
 function log(msg) {
   const box = document.getElementById('logBox');
-  const sp = document.createElement('span');
+  const sp  = document.createElement('span');
   if      (msg.includes('[INFO]'))  sp.className = 'log-info';
   else if (msg.includes('[WARN]'))  sp.className = 'log-warn';
-  else if (msg.includes('[OCR]'))   sp.className = 'log-found';
+  else if (msg.includes('[OCR]') || msg.includes('[MATCH]')) sp.className = 'log-found';
   else if (msg.includes('[ERR]'))   sp.className = 'log-err';
   sp.textContent = msg;
   box.appendChild(sp);
@@ -927,21 +780,15 @@ function log(msg) {
   box.scrollTop = box.scrollHeight;
 }
 
-// ============================================================
-// UTILS
-// ============================================================
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-// ============================================================
-// INIT
-// ============================================================
 loadSavedConfig();
 buildRegionSliders();
 buildCropGrid();
 
 const uploadZone = document.getElementById('uploadZone');
-uploadZone.addEventListener('click', () => document.getElementById('fileInput').click());
-uploadZone.addEventListener('dragover',  e => { e.preventDefault(); uploadZone.classList.add('drag-over'); });
+uploadZone.addEventListener('click',     () => document.getElementById('fileInput').click());
+uploadZone.addEventListener('dragover',  e  => { e.preventDefault(); uploadZone.classList.add('drag-over'); });
 uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
 uploadZone.addEventListener('drop', e => {
   e.preventDefault(); uploadZone.classList.remove('drag-over');
@@ -950,8 +797,6 @@ uploadZone.addEventListener('drop', e => {
 });
 
 new ResizeObserver(() => drawOverlay()).observe(document.getElementById('screen-preview-wrap'));
-
-// Pre-warm English worker on load
 getWorker('en');
 </script>
 </body>
